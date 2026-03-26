@@ -1,68 +1,74 @@
-CREATE database atividade3;
-USE atividade3;
+/** DELETA O SCHEMA DO BD SE EXISTIR */
+DROP DATABASE IF EXISTS  biblioteca_pessoal_1s2026;
 
--- =========================
--- TABELA USUARIO
--- =========================
-CREATE TABLE Usuario (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE
+/** CRIA E SELECIONA UM SCHEMA DE BD */
+CREATE DATABASE biblioteca_pessoal_1s2026;
+USE biblioteca_pessoal_1s2026;
+
+/** CRIA TABELAS, RELAÇÕES E RESTRIÇÕES */
+CREATE TABLE usuario(
+	id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- =========================
--- TABELA AUTOR
--- =========================
-CREATE TABLE Autor (
-    id_autor INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE categoria(
+	id_categoria INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) UNIQUE,
+    descricao TEXT,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- =========================
--- TABELA EDITORA
--- =========================
-CREATE TABLE Editora (
-    id_editora INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE autor(
+	id_autor INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL UNIQUE,
+    ano_nascimento YEAR,
+    ano_morte YEAR,
+    apresentacao TEXT,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- =========================
--- TABELA CATEGORIA
--- =========================
-CREATE TABLE Categoria (
-    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE editora(
+	id_editora INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL UNIQUE,
+    cidade VARCHAR(255),
+    estado VARCHAR(255),
+    pais VARCHAR(255),
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- =========================
--- TABELA LIVRO
--- =========================
-CREATE TABLE Livro (
-    id_livro INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(150) NOT NULL,
+CREATE TABLE livro(
+	id_livro INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     id_autor INT,
     id_editora INT,
-    id_categoria INT,
-
-    FOREIGN KEY (id_usuario)
-        REFERENCES Usuario(id_usuario)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (id_autor)
-        REFERENCES Autor(id_autor)
-        ON DELETE RESTRICT,
-
-    FOREIGN KEY (id_editora)
-        REFERENCES Editora(id_editora)
-        ON DELETE RESTRICT,
-
-    FOREIGN KEY (id_categoria)
-        REFERENCES Categoria(id_categoria)
-        ON DELETE RESTRICT
+    id_categoria INT, 
+    titulo VARCHAR(255) NOT NULL,
+    sinopse TEXT,
+    ano_publicacao YEAR,
+    lido BOOLEAN DEFAULT(0),
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+	CONSTRAINT fk_usuario_livro FOREIGN KEY (id_usuario) 
+    REFERENCES usuario(id_usuario)
+    ON DELETE CASCADE,
+    
+    CONSTRAINT fk_autor_livro FOREIGN KEY (id_autor) 
+    REFERENCES autor(id_autor)
+    ON DELETE RESTRICT,
+    
+    CONSTRAINT fk_editora_livro FOREIGN KEY (id_editora) 
+    REFERENCES editora(id_editora)
+    ON DELETE RESTRICT,
+    
+    CONSTRAINT fk_categoria_livro FOREIGN KEY (id_categoria) 
+    REFERENCES categoria(id_categoria)
+    ON DELETE RESTRICT
 );
-describe Usuario;
-describe Autor;
-describe Editora;
-describe Categoria;
-show tables;
